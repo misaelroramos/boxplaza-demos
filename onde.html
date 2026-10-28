@@ -191,6 +191,7 @@
   <div class="f"><svg><use href="#ball"/></svg><svg><use href="#flag"/></svg><svg><use href="#ball"/></svg></div>
   <div id="loc"></div>
   <p id="src"></p>
+  <p>Medimos de forma anónima el uso de esta demo (qué se pide y a qué hora) para mejorar el servicio. No guardamos tu nombre.</p>
 </footer>
 
 <script>
@@ -215,6 +216,24 @@ if (D.images && D.images.hero) {
 }
 const unit = `<span>${esc(D.name.toUpperCase())} · GASTRONOMIA DO BRASIL</span><svg><use href="#ball"/></svg><svg><use href="#flag"/></svg><svg><use href="#ball"/></svg>`;
 $("track").innerHTML = unit.repeat(8);
+
+// --- métricas anónimas: se guardan en la base de datos (db/schema.sql) ---
+const A = D.analytics || null;
+const DEBUG = /[?&]debug/.test(location.search), NOTRACK = /[?&]notrack/.test(location.search);
+const uuid = () => crypto.randomUUID ? crypto.randomUUID() : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 3 | 8)).toString(16); });
+const sid = (() => { try { let s = sessionStorage.getItem("sid"); if (!s) { s = uuid(); sessionStorage.setItem("sid", s); } return s; } catch (e) { return uuid(); } })();
+const device = matchMedia("(max-width:980px)").matches ? "mobile" : "desktop";
+function send(table, row) {
+  if (DEBUG) console.log("[track]", table, row);
+  if (!A || NOTRACK) return;
+  fetch(`${A.url}/rest/v1/${table}`, {
+    method: "POST", keepalive: true,
+    headers: { "Content-Type": "application/json", apikey: A.anonKey, Authorization: "Bearer " + A.anonKey, Prefer: "return=minimal" },
+    body: JSON.stringify(row),
+  }).catch(() => {});
+}
+const track = (type, f = {}) => send("events", { restaurant: D.slug, session_id: sid, type, device, ...f });
+track("page_view");
 
 const cart = {}, items = {};
 let id = 0;
@@ -266,8 +285,8 @@ function chipSet(el, list, set) {
     set(on ? null : b.textContent); refresh();
   });
 }
-chipSet($("times"), times, v => pickup = v);
-chipSet($("pays"), pays, v => pay = v);
+chipSet($("times"), times, v => { pickup = v; if (v) track("select_pickup", { pickup: v }); });
+chipSet($("pays"), pays, v => { pay = v; if (v) track("select_payment", { payment: v }); });
 $("who").addEventListener("input", refresh);
 
 function refresh() {
@@ -287,16 +306,25 @@ function refresh() {
 document.addEventListener("click", e => {
   const b = e.target.closest("button[data-k]");
   if (!b) return;
-  cart[b.dataset.k] = Math.max(0, cart[b.dataset.k] + Number(b.dataset.d));
+  const before = cart[b.dataset.k];
+  cart[b.dataset.k] = Math.max(0, before + Number(b.dataset.d));
+  if (cart[b.dataset.k] !== before) {
+    const it = items[b.dataset.k];
+    track(cart[b.dataset.k] > before ? "add_item" : "remove_item",
+      { item: (it.group ? it.group + " " : "") + it.name, qty_after: cart[b.dataset.k], unit_price: it.price });
+  }
   refresh();
 });
 $("send").addEventListener("click", () => {
-  const lines = []; let total = 0;
+  const lines = [], sold = []; let total = 0, count = 0;
   for (const k in cart) if (cart[k]) {
     const it = items[k];
     lines.push(`${cart[k]} x ${it.group ? it.group + " " : ""}${it.name} (${cop(cart[k] * it.price)})`);
-    total += cart[k] * it.price;
+    sold.push({ name: it.name, group: it.group || null, qty: cart[k], price: it.price });
+    total += cart[k] * it.price; count += cart[k];
   }
+  track("order_click", { pickup, payment: pay });
+  send("orders", { restaurant: D.slug, session_id: sid, items: sold, item_count: count, total, pickup, payment: pay });
   const who = $("who").value.trim();
   const text = `Hola ${D.name}${who ? ", soy " + who : ""}. Quiero pedir:\n${lines.join("\n")}\nTotal: ${cop(total)}` +
     (pickup ? `\nLo recojo a las ${pickup}` : "") + (pay ? `\nPago por ${pay}` : "");
