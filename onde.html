@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pide en línea</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#fff; --primary:#222; --accent:#e11; --ink:#222; --green:#2f5d34; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"DM Sans", system-ui, sans-serif; background:var(--bg); color:var(--ink); padding-bottom:84px; }
+  h1,h2,h3 { font-family:"Bricolage Grotesque", "DM Sans", system-ui, sans-serif; }
+  .demo { background:var(--ink); color:#fff; font-size:12px; text-align:center; padding:7px 12px; letter-spacing:.2px; }
+  .hero { position:relative; min-height:360px; color:#fff; display:flex; align-items:flex-end; background:var(--primary) center/cover no-repeat; }
+  .hero::after { content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(8,24,56,.88), rgba(8,24,56,.05) 70%); }
+  .hero .in { position:relative; z-index:1; width:100%; max-width:720px; margin:0 auto; padding:24px 20px 30px; }
+  .hero h1 { margin:0; font-size:42px; line-height:1; font-weight:800; }
+  .hero p { margin:8px 0 0; font-size:17px; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .chips span { background:var(--accent); color:#1b1b1b; font-size:13px; font-weight:700; padding:5px 10px; border-radius:6px; }
+  .wave { display:block; width:100%; height:18px; background:var(--bg); }
+  main { max-width:720px; margin:0 auto; padding:0 20px; }
+  .combo { background:var(--accent); color:#1b1b1b; padding:20px; margin:8px 0 6px; border-radius:6px; }
+  .combo h3 { margin:0; font-size:26px; font-weight:800; }
+  .combo .p { font-family:"Bricolage Grotesque"; font-size:34px; font-weight:800; }
+  .combo ul { padding-left:18px; margin:8px 0 0; }
+  h2 { margin:34px 0 2px; color:var(--primary); font-size:26px; font-weight:800; }
+  .note { font-size:13px; opacity:.7; margin:0 0 6px; }
+  .item { display:grid; grid-template-columns:1fr auto auto; gap:14px; align-items:center; padding:13px 0; border-bottom:1.5px solid rgba(0,0,0,.12); }
+  .price { font-weight:700; }
+  .qty { display:flex; align-items:center; gap:8px; }
+  .qty button { width:34px; height:34px; border-radius:6px; border:2px solid var(--primary); background:transparent; color:var(--primary); font-size:18px; font-weight:700; cursor:pointer; }
+  .qty button:active { background:var(--primary); color:#fff; }
+  .qty span { min-width:16px; text-align:center; font-weight:700; }
+  .gallery { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin:34px 0 0; }
+  .gallery img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:6px; display:block; }
+  .bar { position:fixed; left:0; right:0; bottom:0; padding:12px 16px; background:#fff; box-shadow:0 -2px 14px rgba(0,0,0,.18); display:flex; justify-content:center; }
+  .bar button { width:100%; max-width:440px; padding:14px; border:0; border-radius:8px; background:var(--primary); color:#fff; font:700 16px "DM Sans"; cursor:pointer; }
+  .bar button:disabled { background:#b9b9b9; cursor:not-allowed; }
+  footer { text-align:center; font-size:12px; opacity:.6; padding:26px 20px; }
+  @media (max-width:520px) { .hero h1 { font-size:34px; } }
+</style>
+</head>
+<body>
+<div class="demo">Demo preparada para <span id="dn"></span> · el pedido sale como mensaje de WhatsApp</div>
+<section class="hero" id="hero"><div class="in">
+  <h1 id="name"></h1>
+  <p id="tagline"></p>
+  <div class="chips" id="chips"></div>
+</div></section>
+<svg class="wave" viewBox="0 0 120 18" preserveAspectRatio="none" aria-hidden="true"><path d="M0 18 V8 C10 0 20 0 30 8 S50 16 60 8 S80 0 90 8 S110 16 120 8 V18Z" fill="var(--bg)"/></svg>
+<main id="menu"></main>
+<div class="bar"><button id="send" disabled>Agrega algo a tu pedido</button></div>
+<footer id="src"></footer>
+<script>
+const D = {"slug": "onde", "name": "ÔndeDelos", "tagline": "Gastronomía do Brasil en BoxPlaza", "whatsapp": "573043577165", "instagram": "ondedelos", "hours": "Lunes a sábado · hasta las 5 p. m.", "location": "BoxPlaza, Cra. 1 #20A-79, primer piso, mano izquierda", "colors": {"bg": "#fbf4dc", "primary": "#1c4a96", "accent": "#f4b81d", "ink": "#1f2a14", "green": "#2f5d34"}, "source": "Menú tomado de las fotos públicas de Google Maps (dic 2025); fotos de @ondedelos. Verificar precios con el local.", "categories": [{"name": "Baião de dois", "note": "Arroz y fríjoles cocidos juntos con queso coalho", "items": [{"name": "Vitela (carne de res)", "price": 22900}, {"name": "Porco (carne de cerdo)", "price": 22900}, {"name": "Frango (carne de pollo)", "price": 22900}, {"name": "Vegetariana", "price": 21900}]}, {"name": "Feijoada", "note": "Fríjol negro y arroz, guisado con carnes de cerdo y especias", "items": [{"name": "Feijoada", "price": 20900}]}, {"name": "Coxinhas", "note": "Masa de harina con caldo, rellena de pollo desmechado y frita", "items": [{"name": "Vitela (carne de res)", "price": 5000}, {"name": "Frango (carne de pollo)", "price": 5000}, {"name": "Vegetariana", "price": 4500}]}, {"name": "Brigadeiros", "note": "Leche condensada, cacao y mantequilla, enrollado con granulado", "items": [{"name": "Preto (chocolate negro)", "price": 4000}, {"name": "Branco (chocolate blanco)", "price": 4000}, {"name": "Beijinho (coco)", "price": 4000}]}, {"name": "Caipirinhas (mocktail)", "note": "Sin alcohol", "items": [{"name": "Ipanema (frutos rojos)", "price": 8500}, {"name": "Copacabana (maracuyá)", "price": 8500}, {"name": "Leme (limón)", "price": 8500}]}, {"name": "Drinks", "note": "", "items": [{"name": "Guaraná", "price": 10900}, {"name": "Hatsu", "price": 7900}, {"name": "Coca-Cola", "price": 4900}, {"name": "Agua natural", "price": 3900}]}], "combo": {"name": "Arma tu combo", "price": 29900, "description": "Baião de dois + brigadeiro + caipirinha de tu elección", "options": ["Ronaldinho · baião de dois de carne", "Neymar · baião de dois de pollo", "Zico · baião de dois de cerdo", "Pelé · baião de dois vegetariana"]}, "images": {"hero": "assets/onde/local.jpg", "gallery": ["assets/onde/estrogonofe.jpg", "assets/onde/pao-de-queijo.jpg", "assets/onde/local.jpg"]}};
+const cop = n => "$" + n.toLocaleString("es-CO");
+const root = document.documentElement.style;
+for (const k in D.colors) root.setProperty("--" + k, D.colors[k]);
+document.title = D.name + " · Pide en línea";
+document.getElementById("dn").textContent = D.name;
+document.getElementById("name").textContent = D.name;
+document.getElementById("tagline").textContent = D.tagline;
+document.getElementById("src").textContent = D.source;
+if (D.images && D.images.hero) document.getElementById("hero").style.backgroundImage = `url("${D.images.hero}")`;
+document.getElementById("chips").innerHTML = [D.hours, D.location].map(t => `<span>${t}</span>`).join("");
+
+const cart = {}, items = {};
+const menu = document.getElementById("menu");
+let id = 0;
+
+function row(item) {
+  const key = "i" + (id++);
+  items[key] = item; cart[key] = 0;
+  const el = document.createElement("div");
+  el.className = "item";
+  el.innerHTML = `<div>${item.name}</div><div class="price">${cop(item.price)}</div>
+    <div class="qty"><button data-k="${key}" data-d="-1" aria-label="Quitar">−</button><span id="q-${key}">0</span><button data-k="${key}" data-d="1" aria-label="Agregar">+</button></div>`;
+  return el;
+}
+
+if (D.combo) {
+  const c = document.createElement("div");
+  c.className = "combo";
+  c.innerHTML = `<h3>${D.combo.name}</h3><div class="p">${cop(D.combo.price)}</div><div>${D.combo.description}</div>`;
+  menu.appendChild(c);
+  D.combo.options.forEach(o => menu.appendChild(row({ name: "Combo · " + o, price: D.combo.price })));
+}
+D.categories.forEach(cat => {
+  menu.insertAdjacentHTML("beforeend", `<h2>${cat.name}</h2>` + (cat.note ? `<p class="note">${cat.note}</p>` : ""));
+  cat.items.forEach(i => menu.appendChild(row({ name: i.name, group: cat.name, price: i.price })));
+});
+if (D.images && D.images.gallery) {
+  menu.insertAdjacentHTML("beforeend", `<div class="gallery">${D.images.gallery.map(s => `<img src="${s}" alt="" loading="lazy">`).join("")}</div>`);
+}
+
+const send = document.getElementById("send");
+function refresh() {
+  let total = 0, count = 0;
+  for (const k in cart) { total += cart[k] * items[k].price; count += cart[k]; document.getElementById("q-" + k).textContent = cart[k]; }
+  send.disabled = count === 0;
+  send.textContent = count ? `Pedir por WhatsApp · ${count} · ${cop(total)}` : "Agrega algo a tu pedido";
+}
+menu.addEventListener("click", e => {
+  const b = e.target.closest("button[data-k]");
+  if (!b) return;
+  cart[b.dataset.k] = Math.max(0, cart[b.dataset.k] + Number(b.dataset.d));
+  refresh();
+});
+send.addEventListener("click", () => {
+  const lines = []; let total = 0;
+  for (const k in cart) if (cart[k]) {
+    const it = items[k];
+    lines.push(`${cart[k]} x ${it.group ? it.group + " " : ""}${it.name} (${cop(cart[k] * it.price)})`);
+    total += cart[k] * it.price;
+  }
+  const text = `Hola ${D.name}, quiero pedir:\n${lines.join("\n")}\nTotal: ${cop(total)}`;
+  window.open(`https://wa.me/${D.whatsapp}?text=${encodeURIComponent(text)}`, "_blank");
+});
+refresh();
+</script>
+</body>
+</html>
