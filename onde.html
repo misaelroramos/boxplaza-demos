@@ -5,137 +5,297 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pide en línea</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=DM+Sans:wght@400;500;700&family=Caveat+Brush&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#fff; --primary:#222; --accent:#e11; --ink:#222; --green:#2f5d34; }
-  * { box-sizing: border-box; }
-  body { margin:0; font-family:"DM Sans", system-ui, sans-serif; background:var(--bg); color:var(--ink); padding-bottom:84px; }
-  h1,h2,h3 { font-family:"Bricolage Grotesque", "DM Sans", system-ui, sans-serif; }
-  .demo { background:var(--ink); color:#fff; font-size:12px; text-align:center; padding:7px 12px; letter-spacing:.2px; }
-  .hero { position:relative; min-height:360px; color:#fff; display:flex; align-items:flex-end; background:var(--primary) center top/cover no-repeat; }
-  .hero::after { content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(8,24,56,.88), rgba(8,24,56,.05) 70%); }
-  .hero .in { position:relative; z-index:1; width:100%; max-width:720px; margin:0 auto; padding:24px 20px 30px; }
-  .hero h1 { margin:0; font-size:42px; line-height:1; font-weight:800; }
-  .hero p { margin:8px 0 0; font-size:17px; }
-  .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
-  .chips span { background:var(--accent); color:#1b1b1b; font-size:13px; font-weight:700; padding:5px 10px; border-radius:6px; }
-  .wave { display:block; width:100%; height:18px; background:var(--bg); }
-  main { max-width:720px; margin:0 auto; padding:0 20px; }
-  .combo { background:var(--accent); color:#1b1b1b; padding:20px; margin:8px 0 6px; border-radius:6px; }
-  .combo h3 { margin:0; font-size:26px; font-weight:800; }
-  .combo .p { font-family:"Bricolage Grotesque"; font-size:34px; font-weight:800; }
-  .combo ul { padding-left:18px; margin:8px 0 0; }
-  h2 { margin:34px 0 2px; color:var(--primary); font-size:26px; font-weight:800; }
-  .note { font-size:13px; opacity:.7; margin:0 0 6px; }
-  .item { display:grid; grid-template-columns:1fr auto auto; gap:14px; align-items:center; padding:13px 0; border-bottom:1.5px solid rgba(0,0,0,.12); }
-  .price { font-weight:700; }
-  .qty { display:flex; align-items:center; gap:8px; }
-  .qty button { width:34px; height:34px; border-radius:6px; border:2px solid var(--primary); background:transparent; color:var(--primary); font-size:18px; font-weight:700; cursor:pointer; }
-  .qty button:active { background:var(--primary); color:#fff; }
+  :root { --bg:#fbf4dc; --primary:#1c4a96; --accent:#f4b81d; --ink:#1f2a14; --green:#1f7a3a; --white:#fffdf5; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:"DM Sans", system-ui, sans-serif; background:var(--bg); color:var(--ink); }
+  h1,h2,h3 { font-family:"Bowlby One", "DM Sans", sans-serif; font-weight:400; margin:0; letter-spacing:.2px; }
+  img, svg { display:block; }
+  .wrap { max-width:1180px; margin:0 auto; padding:0 20px; }
+
+  /* tira superior */
+  .strip { background:var(--green); color:var(--accent); overflow:hidden; white-space:nowrap; border-bottom:3px solid var(--ink); }
+  .strip .track { display:inline-flex; gap:26px; padding:9px 0; animation:slide 38s linear infinite; font-family:"Bowlby One"; font-size:13px; letter-spacing:1px; }
+  .strip .track span { display:inline-flex; align-items:center; gap:26px; }
+  .strip svg { width:22px; height:22px; }
+  @keyframes slide { to { transform:translateX(-50%); } }
+  @media (prefers-reduced-motion:reduce) { .strip .track { animation:none; } }
+
+  /* hero */
+  .hero { background-color:var(--accent); background-image:var(--wave); border-bottom:3px solid var(--ink); position:relative; overflow:hidden; }
+  .hero .wrap { display:grid; grid-template-columns:1.15fr .85fr; gap:40px; align-items:center; padding-top:48px; padding-bottom:56px; }
+  .kicker { display:inline-flex; align-items:center; gap:10px; background:var(--white); border:2.5px solid var(--ink); border-radius:999px; padding:6px 14px 6px 8px; font-weight:700; font-size:14px; box-shadow:3px 3px 0 var(--ink); }
+  .kicker svg { width:30px; height:21px; border-radius:3px; }
+  .hero h1 { font-size:clamp(44px, 8vw, 96px); line-height:.95; color:var(--primary); margin:18px 0 14px; text-shadow:4px 4px 0 var(--white); }
+  .hero .lead { font-size:clamp(17px, 2.2vw, 21px); max-width:30ch; margin:0 0 22px; font-weight:500; }
+  .facts { display:flex; flex-wrap:wrap; gap:10px; }
+  .facts span { background:var(--primary); color:#fff; border:2.5px solid var(--ink); border-radius:10px; padding:8px 12px; font-weight:700; font-size:14px; box-shadow:3px 3px 0 var(--ink); }
+  .cta { display:inline-block; margin-top:26px; background:var(--ink); color:var(--accent); padding:15px 24px; border-radius:12px; font-family:"Bowlby One"; font-size:17px; text-decoration:none; box-shadow:5px 5px 0 var(--primary); border:2.5px solid var(--ink); }
+  .cta:active { transform:translate(2px,2px); box-shadow:3px 3px 0 var(--primary); }
+  .photo { position:relative; justify-self:center; width:min(100%, 400px); }
+  .photo img { width:100%; border:4px solid var(--ink); border-radius:14px; box-shadow:10px 10px 0 var(--primary); transform:rotate(2.5deg); background:var(--white); }
+  .photo .sticker { position:absolute; left:-16px; bottom:-22px; width:112px; height:112px; border-radius:50%; background:var(--white); border:3px solid var(--ink); display:grid; place-items:center; text-align:center; font-family:"Caveat Brush"; font-size:21px; line-height:1; transform:rotate(-12deg); box-shadow:4px 4px 0 var(--ink); color:var(--green); }
+  .ball { position:absolute; }
+  .b1 { width:70px; right:3%; top:22px; transform:rotate(14deg); }
+  .b2 { width:46px; left:44%; bottom:14px; transform:rotate(-20deg); }
+
+  /* layout */
+  .layout { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:34px; padding-top:44px; padding-bottom:110px; align-items:start; }
+  .sec-title { display:flex; align-items:center; gap:12px; margin:0 0 6px; font-size:clamp(26px, 4vw, 38px); color:var(--primary); }
+  .sec-title svg { width:34px; height:34px; flex:none; }
+  .sec-sub { margin:0 0 20px; opacity:.75; max-width:56ch; }
+  section + section { margin-top:46px; }
+
+  /* combo */
+  .combos { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
+  .combo-banner { background:var(--primary); color:#fff; border:3px solid var(--ink); border-radius:14px; padding:18px 20px; margin-bottom:16px; box-shadow:6px 6px 0 var(--ink); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+  .combo-banner b { font-family:"Bowlby One"; font-size:34px; color:var(--accent); font-weight:400; }
+  .player { background:var(--white); border:3px solid var(--ink); border-radius:14px; padding:16px; box-shadow:5px 5px 0 var(--ink); display:flex; flex-direction:column; gap:10px; position:relative; }
+  .player .num { position:absolute; right:12px; top:8px; font-family:"Bowlby One"; font-size:44px; color:var(--accent); -webkit-text-stroke:2px var(--ink); line-height:1; }
+  .player h3 { font-size:22px; color:var(--green); }
+  .player p { margin:0; font-size:14px; max-width:20ch; }
+  .player .row { margin-top:auto; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+
+  /* categorías */
+  .cats { display:grid; grid-template-columns:repeat(2, 1fr); gap:20px; }
+  .cat { background:var(--white); border:3px solid var(--ink); border-radius:14px; overflow:hidden; box-shadow:5px 5px 0 var(--ink); }
+  .cat header { padding:12px 16px; background:var(--primary); color:#fff; }
+  .cat:nth-child(3n+2) header { background:var(--green); }
+  .cat:nth-child(3n+3) header { background:var(--accent); color:var(--ink); }
+  .cat header h3 { font-size:21px; }
+  .cat header p { margin:3px 0 0; font-size:13px; opacity:.9; }
+  .item { display:grid; grid-template-columns:1fr auto auto; gap:12px; align-items:center; padding:12px 16px; border-top:2px dashed rgba(31,42,20,.22); }
+  .item:first-of-type { border-top:0; }
+  .item .nm { font-weight:500; }
+  .price { font-weight:700; white-space:nowrap; }
+  .qty { display:flex; align-items:center; gap:7px; }
+  .qty button { width:32px; height:32px; border-radius:50%; border:2.5px solid var(--ink); background:var(--accent); color:var(--ink); font-size:18px; font-weight:700; line-height:1; cursor:pointer; padding:0; }
+  .qty button:active { transform:scale(.92); }
   .qty span { min-width:16px; text-align:center; font-weight:700; }
-  .gallery { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin:34px 0 0; }
-  .gallery img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:6px; display:block; }
-  .bar { position:fixed; left:0; right:0; bottom:0; padding:12px 16px; background:#fff; box-shadow:0 -2px 14px rgba(0,0,0,.18); display:flex; justify-content:center; }
-  .bar button { width:100%; max-width:440px; padding:14px; border:0; border-radius:8px; background:var(--primary); color:#fff; font:700 16px "DM Sans"; cursor:pointer; }
-  .bar button:disabled { background:#b9b9b9; cursor:not-allowed; }
-  footer { text-align:center; font-size:12px; opacity:.6; padding:26px 20px; }
-  .hero { background:var(--primary) !important; min-height:0; display:block; }
-  .hero::after { display:none; }
-  .hero .in { display:grid; grid-template-columns:1.1fr 1fr; gap:28px; align-items:center; padding:30px 20px; }
-  .hero .ph img { width:100%; aspect-ratio:4/5; object-fit:cover; border-radius:6px; display:block; }
-  .dish { padding:13px 0; border-bottom:1.5px solid rgba(0,0,0,.12); }
-  .dish .item { border-bottom:0; padding:0 0 10px; }
-  .dish img { width:100%; max-width:340px; border-radius:6px; display:block; }
-  .tbc { font-size:13px; opacity:.7; }
-  @media (max-width:640px) { .hero h1 { font-size:34px; } .hero .in { grid-template-columns:1fr; } .hero .ph img { aspect-ratio:1; } }
+
+  /* novedades con foto */
+  .news { display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; }
+  .card { background:var(--white); border:3px solid var(--ink); border-radius:14px; overflow:hidden; box-shadow:5px 5px 0 var(--ink); }
+  .card img { width:100%; aspect-ratio:4/5; object-fit:cover; border-bottom:3px solid var(--ink); }
+  .card .tx { padding:12px 14px; }
+  .card h3 { font-size:17px; line-height:1.15; }
+  .card .tbc { display:inline-block; margin-top:8px; background:var(--accent); border:2px solid var(--ink); border-radius:999px; padding:3px 10px; font-size:12px; font-weight:700; }
+
+  /* panel del pedido */
+  .order { position:sticky; top:16px; background:var(--white); border:3px solid var(--ink); border-radius:16px; box-shadow:7px 7px 0 var(--ink); overflow:hidden; }
+  .order .top { background:var(--green); color:#fff; padding:14px 18px; display:flex; align-items:center; gap:10px; }
+  .order .top h2 { font-size:22px; }
+  .order .top svg { width:28px; height:28px; }
+  .order .body { padding:16px 18px 18px; }
+  .lines { min-height:48px; font-size:14px; }
+  .lines .empty { opacity:.6; }
+  .lines div { display:flex; justify-content:space-between; gap:10px; padding:5px 0; border-bottom:1px dotted rgba(31,42,20,.3); }
+  .total { display:flex; justify-content:space-between; align-items:baseline; margin:14px 0; font-family:"Bowlby One"; font-size:24px; color:var(--primary); }
+  .lbl { font-weight:700; font-size:13px; margin:14px 0 6px; display:block; }
+  .chips { display:flex; flex-wrap:wrap; gap:7px; }
+  .chips button { border:2.5px solid var(--ink); background:#fff; border-radius:999px; padding:6px 11px; font:700 13px "DM Sans"; cursor:pointer; }
+  .chips button.on { background:var(--primary); color:#fff; }
+  .order input[type=text] { width:100%; border:2.5px solid var(--ink); border-radius:10px; padding:10px 12px; font:500 15px "DM Sans"; background:#fff; }
+  .send { width:100%; margin-top:18px; padding:15px; border:2.5px solid var(--ink); border-radius:12px; background:#25d366; color:#06210f; font:400 17px "Bowlby One"; cursor:pointer; box-shadow:4px 4px 0 var(--ink); }
+  .send:disabled { background:#d6d2c0; color:#777; cursor:not-allowed; box-shadow:none; }
+  .fine { font-size:12px; opacity:.65; margin:10px 0 0; }
+
+  .mbar { display:none; }
+  footer { background:var(--ink); color:var(--white); text-align:center; padding:30px 20px 34px; font-size:13px; }
+  footer .f { display:flex; justify-content:center; gap:14px; margin-bottom:14px; }
+  footer .f svg { width:34px; height:34px; }
+  footer p { margin:6px auto 0; max-width:60ch; opacity:.75; }
+
+  @media (max-width:980px) {
+    .hero .wrap { grid-template-columns:1fr; gap:34px; padding-top:34px; }
+    .layout { grid-template-columns:1fr; padding-bottom:120px; }
+    .order { position:static; }
+    .mbar { display:flex; position:fixed; left:0; right:0; bottom:0; z-index:5; padding:10px 14px; background:var(--white); border-top:3px solid var(--ink); }
+    .mbar a { flex:1; text-align:center; background:var(--primary); color:#fff; border:2.5px solid var(--ink); border-radius:12px; padding:13px; font:400 16px "Bowlby One"; text-decoration:none; }
+  }
+  @media (max-width:640px) {
+    .wrap { padding:0 16px; }
+    .combos, .cats, .news { grid-template-columns:1fr; }
+    .news { grid-template-columns:repeat(2, 1fr); gap:14px; }
+    .photo .sticker { width:92px; height:92px; font-size:17px; }
+  }
 </style>
 </head>
 <body>
-<div class="demo">Demo preparada para <span id="dn"></span> · el pedido sale como mensaje de WhatsApp</div>
-<section class="hero" id="hero"><div class="in">
-  <div>
-    <h1 id="name"></h1>
-    <p id="tagline"></p>
-    <div class="chips" id="chips"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ball" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="29" fill="#fffdf5" stroke="#1f2a14" stroke-width="3"/>
+    <polygon points="32,19 43,27 39,40 25,40 21,27" fill="#1f2a14"/>
+    <path d="M32 19V5M43 27l13-5M39 40l8 12M25 40l-8 12M21 27L8 22" stroke="#1f2a14" stroke-width="3" fill="none"/>
+  </symbol>
+  <symbol id="flag" viewBox="0 0 60 42">
+    <rect width="60" height="42" fill="#009b3a"/>
+    <polygon points="30,4 56,21 30,38 4,21" fill="#ffdf00"/>
+    <circle cx="30" cy="21" r="9" fill="#002776"/>
+    <path d="M21.5 19.2Q30 15.8 38.6 23" stroke="#fff" stroke-width="2" fill="none"/>
+  </symbol>
+</svg>
+
+<div class="strip" aria-hidden="true"><div class="track" id="track"></div></div>
+
+<header class="hero" id="hero">
+  <svg class="ball b1" aria-hidden="true"><use href="#ball"/></svg>
+  <svg class="ball b2" aria-hidden="true"><use href="#ball"/></svg>
+  <div class="wrap">
+    <div>
+      <span class="kicker"><svg><use href="#flag"/></svg><span id="tag"></span></span>
+      <h1 id="name"></h1>
+      <p class="lead" id="lead"></p>
+      <div class="facts" id="facts"></div>
+      <a class="cta" href="#menu">Armar mi pedido</a>
+    </div>
+    <div class="photo" id="photo"></div>
   </div>
-  <div class="ph" id="ph"></div>
-</div></section>
-<svg class="wave" viewBox="0 0 120 18" preserveAspectRatio="none" aria-hidden="true"><path d="M0 18 V8 C10 0 20 0 30 8 S50 16 60 8 S80 0 90 8 S110 16 120 8 V18Z" fill="var(--bg)"/></svg>
-<main id="menu"></main>
-<div class="bar"><button id="send" disabled>Agrega algo a tu pedido</button></div>
-<footer id="src"></footer>
+</header>
+
+<div class="wrap layout">
+  <main id="menu">
+    <section id="combos"></section>
+    <section id="cats"></section>
+    <section id="news"></section>
+  </main>
+
+  <aside class="order" id="order">
+    <div class="top"><svg><use href="#ball"/></svg><h2>Tu pedido</h2></div>
+    <div class="body">
+      <div class="lines" id="lines"></div>
+      <div class="total"><span>Total</span><span id="total">$0</span></div>
+      <label class="lbl" for="who">Tu nombre</label>
+      <input type="text" id="who" placeholder="Para llamarte cuando esté listo" autocomplete="name">
+      <span class="lbl">¿A qué hora lo recoges?</span>
+      <div class="chips" id="times"></div>
+      <span class="lbl">¿Cómo pagas?</span>
+      <div class="chips" id="pays"></div>
+      <button class="send" id="send" disabled>Pedir por WhatsApp</button>
+      <p class="fine">Te abre WhatsApp con el pedido ya escrito. Tú lo envías.</p>
+    </div>
+  </aside>
+</div>
+
+<div class="mbar"><a href="#order" id="mtotal">Ver mi pedido</a></div>
+
+<footer>
+  <div class="f"><svg><use href="#ball"/></svg><svg><use href="#flag"/></svg><svg><use href="#ball"/></svg></div>
+  <div id="loc"></div>
+  <p id="src"></p>
+</footer>
+
 <script>
-const D = {"slug": "onde", "name": "ÔndeDelos", "tagline": "Gastronomía do Brasil en BoxPlaza", "whatsapp": "573043577165", "instagram": "ondedelos", "hours": "Lunes a sábado · hasta las 5 p. m.", "location": "BoxPlaza, Cra. 1 #20A-79, primer piso, mano izquierda", "colors": {"bg": "#fbf4dc", "primary": "#1c4a96", "accent": "#f4b81d", "ink": "#1f2a14", "green": "#2f5d34"}, "source": "Menú tomado de las fotos públicas de Google Maps (dic 2025); fotos de @ondedelos. Verificar precios con el local.", "categories": [{"name": "Baião de dois", "note": "Arroz y fríjoles cocidos juntos con queso coalho", "items": [{"name": "Vitela (carne de res)", "price": 22900}, {"name": "Porco (carne de cerdo)", "price": 22900}, {"name": "Frango (carne de pollo)", "price": 22900}, {"name": "Vegetariana", "price": 21900}]}, {"name": "Feijoada", "note": "Fríjol negro y arroz, guisado con carnes de cerdo y especias", "items": [{"name": "Feijoada", "price": 20900}]}, {"name": "Coxinhas", "note": "Masa de harina con caldo, rellena de pollo desmechado y frita", "items": [{"name": "Vitela (carne de res)", "price": 5000}, {"name": "Frango (carne de pollo)", "price": 5000}, {"name": "Vegetariana", "price": 4500}]}, {"name": "Brigadeiros", "note": "Leche condensada, cacao y mantequilla, enrollado con granulado", "items": [{"name": "Preto (chocolate negro)", "price": 4000}, {"name": "Branco (chocolate blanco)", "price": 4000}, {"name": "Beijinho (coco)", "price": 4000}]}, {"name": "Caipirinhas (mocktail)", "note": "Sin alcohol", "items": [{"name": "Ipanema (frutos rojos)", "price": 8500}, {"name": "Copacabana (maracuyá)", "price": 8500}, {"name": "Leme (limón)", "price": 8500}]}, {"name": "Drinks", "note": "", "items": [{"name": "Guaraná", "price": 10900}, {"name": "Hatsu", "price": 7900}, {"name": "Coca-Cola", "price": 4900}, {"name": "Agua natural", "price": 3900}]}, {"name": "Novedades", "note": "Platos que aparecen en su Instagram. Falta confirmar el precio de cada uno.", "items": [{"name": "Strogonoff de frango (pollo)", "price": null, "image": "assets/onde/estrogonofe.jpg"}, {"name": "Pão de queijo (combo de 3)", "price": null, "image": "assets/onde/pao-de-queijo.jpg"}, {"name": "Açaí", "price": null, "image": "assets/onde/acai.jpg"}]}], "combo": {"name": "Arma tu combo", "price": 29900, "description": "Baião de dois + brigadeiro + caipirinha de tu elección", "options": ["Ronaldinho · baião de dois de carne", "Neymar · baião de dois de pollo", "Zico · baião de dois de cerdo", "Pelé · baião de dois vegetariana"]}, "images": {"hero": "assets/onde/fidelidade.jpg"}};
+const D = {"slug": "onde", "name": "ÔndeDelos", "tagline": "Gastronomía do Brasil", "whatsapp": "573043577165", "instagram": "ondedelos", "hours": "Lunes a sábado · hasta las 5 p. m.", "location": "BoxPlaza, Cra. 1 #20A-79, primer piso, mano izquierda", "colors": {"bg": "#fbf4dc", "primary": "#1c4a96", "accent": "#f4b81d", "ink": "#1f2a14", "green": "#2f5d34"}, "source": "Demo con el menú público de ÔndeDelos (Google Maps, dic 2025) y fotos de su Instagram. Precios por confirmar con el local.", "categories": [{"name": "Baião de dois", "note": "Arroz y fríjoles cocidos juntos con queso coalho", "items": [{"name": "Vitela (carne de res)", "price": 22900}, {"name": "Porco (carne de cerdo)", "price": 22900}, {"name": "Frango (carne de pollo)", "price": 22900}, {"name": "Vegetariana", "price": 21900}]}, {"name": "Feijoada", "note": "Fríjol negro y arroz, guisado con carnes de cerdo y especias", "items": [{"name": "Feijoada", "price": 20900}]}, {"name": "Coxinhas", "note": "Masa de harina con caldo, rellena de pollo desmechado y frita", "items": [{"name": "Vitela (carne de res)", "price": 5000}, {"name": "Frango (carne de pollo)", "price": 5000}, {"name": "Vegetariana", "price": 4500}]}, {"name": "Brigadeiros", "note": "Leche condensada, cacao y mantequilla, enrollado con granulado", "items": [{"name": "Preto (chocolate negro)", "price": 4000}, {"name": "Branco (chocolate blanco)", "price": 4000}, {"name": "Beijinho (coco)", "price": 4000}]}, {"name": "Caipirinhas (mocktail)", "note": "Sin alcohol", "items": [{"name": "Ipanema (frutos rojos)", "price": 8500}, {"name": "Copacabana (maracuyá)", "price": 8500}, {"name": "Leme (limón)", "price": 8500}]}, {"name": "Drinks", "note": "", "items": [{"name": "Guaraná", "price": 10900}, {"name": "Hatsu", "price": 7900}, {"name": "Coca-Cola", "price": 4900}, {"name": "Agua natural", "price": 3900}]}, {"name": "Novedades", "note": "Platos que aparecen en su Instagram. Falta confirmar el precio de cada uno.", "items": [{"name": "Strogonoff de frango (pollo)", "price": null, "image": "assets/onde/estrogonofe.jpg"}, {"name": "Pão de queijo (combo de 3)", "price": null, "image": "assets/onde/pao-de-queijo.jpg"}, {"name": "Açaí", "price": null, "image": "assets/onde/acai.jpg"}]}], "combo": {"name": "Arma tu combo", "price": 29900, "description": "Baião de dois + brigadeiro + caipirinha de tu elección", "options": ["Ronaldinho · baião de dois de carne", "Neymar · baião de dois de pollo", "Zico · baião de dois de cerdo", "Pelé · baião de dois vegetariana"]}, "images": {"hero": "assets/onde/fidelidade.jpg"}, "lead": "Baião de dois, coxinhas y brigadeiros como en Brasil. Pide desde el celular y recoge sin fila.", "pickup": ["12:00", "12:15", "12:30", "12:45", "1:00", "1:15", "1:30"], "payments": ["Nequi", "Transferencia"]};
 const cop = n => "$" + n.toLocaleString("es-CO");
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
 const root = document.documentElement.style;
 for (const k in D.colors) root.setProperty("--" + k, D.colors[k]);
+const waveColor = encodeURIComponent(D.colors.primary);
+root.setProperty("--wave", `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'%3E%3Cpath d='M0 30 C15 10 30 10 45 30 S75 50 90 30 S105 10 120 30' fill='none' stroke='${waveColor}' stroke-opacity='.16' stroke-width='7'/%3E%3C/svg%3E")`);
+
 document.title = D.name + " · Pide en línea";
-document.getElementById("dn").textContent = D.name;
-document.getElementById("name").textContent = D.name;
-document.getElementById("tagline").textContent = D.tagline;
-document.getElementById("src").textContent = D.source;
-if (D.images && D.images.hero) document.getElementById("ph").innerHTML = `<img src="${D.images.hero}" alt="">`;
-document.getElementById("chips").innerHTML = [D.hours, D.location].map(t => `<span>${t}</span>`).join("");
+$("name").textContent = D.name;
+$("tag").textContent = D.tagline;
+$("lead").textContent = D.lead || "";
+$("loc").textContent = D.location;
+$("src").textContent = D.source;
+$("facts").innerHTML = [D.hours, "Recoges en BoxPlaza", "Pagas por " + (D.payments || ["Nequi"]).join(" o ")].map(t => `<span>${esc(t)}</span>`).join("");
+if (D.images && D.images.hero) {
+  $("photo").innerHTML = `<img src="${D.images.hero}" alt="${esc(D.name)}"><div class="sticker">Sem sair<br>dos Andes</div>`;
+}
+const unit = `<span>${esc(D.name.toUpperCase())} · GASTRONOMIA DO BRASIL</span><svg><use href="#ball"/></svg><svg><use href="#flag"/></svg><svg><use href="#ball"/></svg>`;
+$("track").innerHTML = unit.repeat(8);
 
 const cart = {}, items = {};
-const menu = document.getElementById("menu");
 let id = 0;
-
-function row(item) {
-  const el = document.createElement("div");
-  el.className = "item";
-  if (item.price == null) {
-    el.innerHTML = `<div>${item.name}</div><div class="tbc">precio por confirmar</div><div></div>`;
-  } else {
-    const key = "i" + (id++);
-    items[key] = item; cart[key] = 0;
-    el.innerHTML = `<div>${item.name}</div><div class="price">${cop(item.price)}</div>
-      <div class="qty"><button data-k="${key}" data-d="-1" aria-label="Quitar">−</button><span id="q-${key}">0</span><button data-k="${key}" data-d="1" aria-label="Agregar">+</button></div>`;
-  }
-  if (!item.image) return el;
-  const wrap = document.createElement("div");
-  wrap.className = "dish";
-  wrap.appendChild(el);
-  wrap.insertAdjacentHTML("beforeend", `<img src="${item.image}" alt="${item.name}" loading="lazy">`);
-  return wrap;
-}
+function addItem(item) { const k = "i" + (id++); items[k] = item; cart[k] = 0; return k; }
+const stepper = k => `<div class="qty"><button data-k="${k}" data-d="-1" aria-label="Quitar">−</button><span id="q-${k}">0</span><button data-k="${k}" data-d="1" aria-label="Agregar">+</button></div>`;
 
 if (D.combo) {
-  const c = document.createElement("div");
-  c.className = "combo";
-  c.innerHTML = `<h3>${D.combo.name}</h3><div class="p">${cop(D.combo.price)}</div><div>${D.combo.description}</div>`;
-  menu.appendChild(c);
-  D.combo.options.forEach(o => menu.appendChild(row({ name: "Combo · " + o, price: D.combo.price })));
-}
-D.categories.forEach(cat => {
-  menu.insertAdjacentHTML("beforeend", `<h2>${cat.name}</h2>` + (cat.note ? `<p class="note">${cat.note}</p>` : ""));
-  cat.items.forEach(i => menu.appendChild(row({ name: i.name, group: cat.name, price: i.price, image: i.image })));
-});
-if (D.images && D.images.gallery) {
-  menu.insertAdjacentHTML("beforeend", `<div class="gallery">${D.images.gallery.map(s => `<img src="${s}" alt="" loading="lazy">`).join("")}</div>`);
+  const players = D.combo.options.map((o, i) => {
+    const [who, what] = o.split(" · ");
+    const k = addItem({ name: "Combo " + who, price: D.combo.price, extra: what });
+    const num = ["10", "11", "9", "10"][i] || "";
+    return `<div class="player"><span class="num">${num}</span><h3>${esc(who)}</h3><p>${esc(what)}</p>
+      <div class="row"><span class="price">${cop(D.combo.price)}</span>${stepper(k)}</div></div>`;
+  }).join("");
+  $("combos").innerHTML = `<h2 class="sec-title"><svg><use href="#ball"/></svg>${esc(D.combo.name)}</h2>
+    <p class="sec-sub">Elige tu jugador y completa con tu brigadeiro y tu caipirinha.</p>
+    <div class="combo-banner"><span>${esc(D.combo.description)}</span><b>${cop(D.combo.price)}</b></div>
+    <div class="combos">${players}</div>`;
 }
 
-const send = document.getElementById("send");
-function refresh() {
-  let total = 0, count = 0;
-  for (const k in cart) { total += cart[k] * items[k].price; count += cart[k]; document.getElementById("q-" + k).textContent = cart[k]; }
-  send.disabled = count === 0;
-  send.textContent = count ? `Pedir por WhatsApp · ${count} · ${cop(total)}` : "Agrega algo a tu pedido";
+const priced = D.categories.filter(c => c.items.some(i => i.price != null));
+$("cats").innerHTML = `<h2 class="sec-title"><svg><use href="#flag"/></svg>La carta</h2><p class="sec-sub">Todo lo que sale de la cocina. Toca + para sumarlo.</p>` +
+  `<div class="cats">` + priced.map(cat => {
+    const rows = cat.items.filter(i => i.price != null).map(i => {
+      const k = addItem({ name: i.name, group: cat.name, price: i.price });
+      return `<div class="item"><span class="nm">${esc(i.name)}</span><span class="price">${cop(i.price)}</span>${stepper(k)}</div>`;
+    }).join("");
+    return `<div class="cat"><header><h3>${esc(cat.name)}</h3>${cat.note ? `<p>${esc(cat.note)}</p>` : ""}</header>${rows}</div>`;
+  }).join("") + `</div>`;
+
+const novel = D.categories.filter(c => c.items.every(i => i.price == null));
+if (novel.length) {
+  $("news").innerHTML = novel.map(cat => `<h2 class="sec-title"><svg><use href="#ball"/></svg>${esc(cat.name)}</h2>
+    <p class="sec-sub">${esc(cat.note || "")}</p>
+    <div class="news">${cat.items.map(i => `<div class="card">${i.image ? `<img src="${i.image}" alt="${esc(i.name)}" loading="lazy">` : ""}
+      <div class="tx"><h3>${esc(i.name)}</h3><span class="tbc">precio por confirmar</span></div></div>`).join("")}</div>`).join("");
 }
-menu.addEventListener("click", e => {
+
+let pickup = null, pay = null;
+const times = D.pickup || ["12:00", "12:15", "12:30", "12:45", "1:00", "1:15", "1:30"];
+const pays = D.payments || ["Nequi", "Transferencia"];
+function chipSet(el, list, set) {
+  el.innerHTML = list.map(t => `<button type="button">${esc(t)}</button>`).join("");
+  el.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    const on = b.classList.contains("on");
+    [...el.children].forEach(c => c.classList.remove("on"));
+    if (!on) b.classList.add("on");
+    set(on ? null : b.textContent); refresh();
+  });
+}
+chipSet($("times"), times, v => pickup = v);
+chipSet($("pays"), pays, v => pay = v);
+$("who").addEventListener("input", refresh);
+
+function refresh() {
+  let total = 0, count = 0, lines = "";
+  for (const k in cart) {
+    document.getElementById("q-" + k).textContent = cart[k];
+    if (!cart[k]) continue;
+    const it = items[k];
+    total += cart[k] * it.price; count += cart[k];
+    lines += `<div><span>${cart[k]} × ${esc((it.group ? it.group + " " : "") + it.name)}</span><span>${cop(cart[k] * it.price)}</span></div>`;
+  }
+  $("lines").innerHTML = lines || `<span class="empty">Todavía no has agregado nada.</span>`;
+  $("total").textContent = cop(total);
+  $("send").disabled = count === 0;
+  $("mtotal").textContent = count ? `Ver mi pedido · ${count} · ${cop(total)}` : "Ver mi pedido";
+}
+document.addEventListener("click", e => {
   const b = e.target.closest("button[data-k]");
   if (!b) return;
   cart[b.dataset.k] = Math.max(0, cart[b.dataset.k] + Number(b.dataset.d));
   refresh();
 });
-send.addEventListener("click", () => {
+$("send").addEventListener("click", () => {
   const lines = []; let total = 0;
   for (const k in cart) if (cart[k]) {
     const it = items[k];
     lines.push(`${cart[k]} x ${it.group ? it.group + " " : ""}${it.name} (${cop(cart[k] * it.price)})`);
     total += cart[k] * it.price;
   }
-  const text = `Hola ${D.name}, quiero pedir:\n${lines.join("\n")}\nTotal: ${cop(total)}`;
+  const who = $("who").value.trim();
+  const text = `Hola ${D.name}${who ? ", soy " + who : ""}. Quiero pedir:\n${lines.join("\n")}\nTotal: ${cop(total)}` +
+    (pickup ? `\nLo recojo a las ${pickup}` : "") + (pay ? `\nPago por ${pay}` : "");
   window.open(`https://wa.me/${D.whatsapp}?text=${encodeURIComponent(text)}`, "_blank");
 });
 refresh();
