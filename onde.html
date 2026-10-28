@@ -39,22 +39,33 @@
   .bar button { width:100%; max-width:440px; padding:14px; border:0; border-radius:8px; background:var(--primary); color:#fff; font:700 16px "DM Sans"; cursor:pointer; }
   .bar button:disabled { background:#b9b9b9; cursor:not-allowed; }
   footer { text-align:center; font-size:12px; opacity:.6; padding:26px 20px; }
-  @media (max-width:520px) { .hero h1 { font-size:34px; } }
+  .hero { background:var(--primary) !important; min-height:0; display:block; }
+  .hero::after { display:none; }
+  .hero .in { display:grid; grid-template-columns:1.1fr 1fr; gap:28px; align-items:center; padding:30px 20px; }
+  .hero .ph img { width:100%; aspect-ratio:4/5; object-fit:cover; border-radius:6px; display:block; }
+  .dish { padding:13px 0; border-bottom:1.5px solid rgba(0,0,0,.12); }
+  .dish .item { border-bottom:0; padding:0 0 10px; }
+  .dish img { width:100%; max-width:340px; border-radius:6px; display:block; }
+  .tbc { font-size:13px; opacity:.7; }
+  @media (max-width:640px) { .hero h1 { font-size:34px; } .hero .in { grid-template-columns:1fr; } .hero .ph img { aspect-ratio:1; } }
 </style>
 </head>
 <body>
 <div class="demo">Demo preparada para <span id="dn"></span> · el pedido sale como mensaje de WhatsApp</div>
 <section class="hero" id="hero"><div class="in">
-  <h1 id="name"></h1>
-  <p id="tagline"></p>
-  <div class="chips" id="chips"></div>
+  <div>
+    <h1 id="name"></h1>
+    <p id="tagline"></p>
+    <div class="chips" id="chips"></div>
+  </div>
+  <div class="ph" id="ph"></div>
 </div></section>
 <svg class="wave" viewBox="0 0 120 18" preserveAspectRatio="none" aria-hidden="true"><path d="M0 18 V8 C10 0 20 0 30 8 S50 16 60 8 S80 0 90 8 S110 16 120 8 V18Z" fill="var(--bg)"/></svg>
 <main id="menu"></main>
 <div class="bar"><button id="send" disabled>Agrega algo a tu pedido</button></div>
 <footer id="src"></footer>
 <script>
-const D = {"slug": "onde", "name": "ÔndeDelos", "tagline": "Gastronomía do Brasil en BoxPlaza", "whatsapp": "573043577165", "instagram": "ondedelos", "hours": "Lunes a sábado · hasta las 5 p. m.", "location": "BoxPlaza, Cra. 1 #20A-79, primer piso, mano izquierda", "colors": {"bg": "#fbf4dc", "primary": "#1c4a96", "accent": "#f4b81d", "ink": "#1f2a14", "green": "#2f5d34"}, "source": "Menú tomado de las fotos públicas de Google Maps (dic 2025); fotos de @ondedelos. Verificar precios con el local.", "categories": [{"name": "Baião de dois", "note": "Arroz y fríjoles cocidos juntos con queso coalho", "items": [{"name": "Vitela (carne de res)", "price": 22900}, {"name": "Porco (carne de cerdo)", "price": 22900}, {"name": "Frango (carne de pollo)", "price": 22900}, {"name": "Vegetariana", "price": 21900}]}, {"name": "Feijoada", "note": "Fríjol negro y arroz, guisado con carnes de cerdo y especias", "items": [{"name": "Feijoada", "price": 20900}]}, {"name": "Coxinhas", "note": "Masa de harina con caldo, rellena de pollo desmechado y frita", "items": [{"name": "Vitela (carne de res)", "price": 5000}, {"name": "Frango (carne de pollo)", "price": 5000}, {"name": "Vegetariana", "price": 4500}]}, {"name": "Brigadeiros", "note": "Leche condensada, cacao y mantequilla, enrollado con granulado", "items": [{"name": "Preto (chocolate negro)", "price": 4000}, {"name": "Branco (chocolate blanco)", "price": 4000}, {"name": "Beijinho (coco)", "price": 4000}]}, {"name": "Caipirinhas (mocktail)", "note": "Sin alcohol", "items": [{"name": "Ipanema (frutos rojos)", "price": 8500}, {"name": "Copacabana (maracuyá)", "price": 8500}, {"name": "Leme (limón)", "price": 8500}]}, {"name": "Drinks", "note": "", "items": [{"name": "Guaraná", "price": 10900}, {"name": "Hatsu", "price": 7900}, {"name": "Coca-Cola", "price": 4900}, {"name": "Agua natural", "price": 3900}]}], "combo": {"name": "Arma tu combo", "price": 29900, "description": "Baião de dois + brigadeiro + caipirinha de tu elección", "options": ["Ronaldinho · baião de dois de carne", "Neymar · baião de dois de pollo", "Zico · baião de dois de cerdo", "Pelé · baião de dois vegetariana"]}, "images": {"hero": "assets/onde/local.jpg", "gallery": ["assets/onde/estrogonofe.jpg", "assets/onde/pao-de-queijo.jpg", "assets/onde/local.jpg"]}};
+const D = {"slug": "onde", "name": "ÔndeDelos", "tagline": "Gastronomía do Brasil en BoxPlaza", "whatsapp": "573043577165", "instagram": "ondedelos", "hours": "Lunes a sábado · hasta las 5 p. m.", "location": "BoxPlaza, Cra. 1 #20A-79, primer piso, mano izquierda", "colors": {"bg": "#fbf4dc", "primary": "#1c4a96", "accent": "#f4b81d", "ink": "#1f2a14", "green": "#2f5d34"}, "source": "Menú tomado de las fotos públicas de Google Maps (dic 2025); fotos de @ondedelos. Verificar precios con el local.", "categories": [{"name": "Baião de dois", "note": "Arroz y fríjoles cocidos juntos con queso coalho", "items": [{"name": "Vitela (carne de res)", "price": 22900}, {"name": "Porco (carne de cerdo)", "price": 22900}, {"name": "Frango (carne de pollo)", "price": 22900}, {"name": "Vegetariana", "price": 21900}]}, {"name": "Feijoada", "note": "Fríjol negro y arroz, guisado con carnes de cerdo y especias", "items": [{"name": "Feijoada", "price": 20900}]}, {"name": "Coxinhas", "note": "Masa de harina con caldo, rellena de pollo desmechado y frita", "items": [{"name": "Vitela (carne de res)", "price": 5000}, {"name": "Frango (carne de pollo)", "price": 5000}, {"name": "Vegetariana", "price": 4500}]}, {"name": "Brigadeiros", "note": "Leche condensada, cacao y mantequilla, enrollado con granulado", "items": [{"name": "Preto (chocolate negro)", "price": 4000}, {"name": "Branco (chocolate blanco)", "price": 4000}, {"name": "Beijinho (coco)", "price": 4000}]}, {"name": "Caipirinhas (mocktail)", "note": "Sin alcohol", "items": [{"name": "Ipanema (frutos rojos)", "price": 8500}, {"name": "Copacabana (maracuyá)", "price": 8500}, {"name": "Leme (limón)", "price": 8500}]}, {"name": "Drinks", "note": "", "items": [{"name": "Guaraná", "price": 10900}, {"name": "Hatsu", "price": 7900}, {"name": "Coca-Cola", "price": 4900}, {"name": "Agua natural", "price": 3900}]}, {"name": "Novedades", "note": "Platos que aparecen en su Instagram. Falta confirmar el precio de cada uno.", "items": [{"name": "Strogonoff de frango (pollo)", "price": null, "image": "assets/onde/estrogonofe.jpg"}, {"name": "Pão de queijo (combo de 3)", "price": null, "image": "assets/onde/pao-de-queijo.jpg"}, {"name": "Açaí", "price": null, "image": "assets/onde/acai.jpg"}]}], "combo": {"name": "Arma tu combo", "price": 29900, "description": "Baião de dois + brigadeiro + caipirinha de tu elección", "options": ["Ronaldinho · baião de dois de carne", "Neymar · baião de dois de pollo", "Zico · baião de dois de cerdo", "Pelé · baião de dois vegetariana"]}, "images": {"hero": "assets/onde/fidelidade.jpg"}};
 const cop = n => "$" + n.toLocaleString("es-CO");
 const root = document.documentElement.style;
 for (const k in D.colors) root.setProperty("--" + k, D.colors[k]);
@@ -63,7 +74,7 @@ document.getElementById("dn").textContent = D.name;
 document.getElementById("name").textContent = D.name;
 document.getElementById("tagline").textContent = D.tagline;
 document.getElementById("src").textContent = D.source;
-if (D.images && D.images.hero) document.getElementById("hero").style.backgroundImage = `url("${D.images.hero}")`;
+if (D.images && D.images.hero) document.getElementById("ph").innerHTML = `<img src="${D.images.hero}" alt="">`;
 document.getElementById("chips").innerHTML = [D.hours, D.location].map(t => `<span>${t}</span>`).join("");
 
 const cart = {}, items = {};
@@ -71,13 +82,22 @@ const menu = document.getElementById("menu");
 let id = 0;
 
 function row(item) {
-  const key = "i" + (id++);
-  items[key] = item; cart[key] = 0;
   const el = document.createElement("div");
   el.className = "item";
-  el.innerHTML = `<div>${item.name}</div><div class="price">${cop(item.price)}</div>
-    <div class="qty"><button data-k="${key}" data-d="-1" aria-label="Quitar">−</button><span id="q-${key}">0</span><button data-k="${key}" data-d="1" aria-label="Agregar">+</button></div>`;
-  return el;
+  if (item.price == null) {
+    el.innerHTML = `<div>${item.name}</div><div class="tbc">precio por confirmar</div><div></div>`;
+  } else {
+    const key = "i" + (id++);
+    items[key] = item; cart[key] = 0;
+    el.innerHTML = `<div>${item.name}</div><div class="price">${cop(item.price)}</div>
+      <div class="qty"><button data-k="${key}" data-d="-1" aria-label="Quitar">−</button><span id="q-${key}">0</span><button data-k="${key}" data-d="1" aria-label="Agregar">+</button></div>`;
+  }
+  if (!item.image) return el;
+  const wrap = document.createElement("div");
+  wrap.className = "dish";
+  wrap.appendChild(el);
+  wrap.insertAdjacentHTML("beforeend", `<img src="${item.image}" alt="${item.name}" loading="lazy">`);
+  return wrap;
 }
 
 if (D.combo) {
@@ -89,7 +109,7 @@ if (D.combo) {
 }
 D.categories.forEach(cat => {
   menu.insertAdjacentHTML("beforeend", `<h2>${cat.name}</h2>` + (cat.note ? `<p class="note">${cat.note}</p>` : ""));
-  cat.items.forEach(i => menu.appendChild(row({ name: i.name, group: cat.name, price: i.price })));
+  cat.items.forEach(i => menu.appendChild(row({ name: i.name, group: cat.name, price: i.price, image: i.image })));
 });
 if (D.images && D.images.gallery) {
   menu.insertAdjacentHTML("beforeend", `<div class="gallery">${D.images.gallery.map(s => `<img src="${s}" alt="" loading="lazy">`).join("")}</div>`);
